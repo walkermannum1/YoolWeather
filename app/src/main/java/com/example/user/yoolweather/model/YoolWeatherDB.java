@@ -91,8 +91,9 @@ public class YoolWeatherDB {
                 city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
                 city.setProvinceId(provinceId);
                 list.add(city);
-            }
+            }while (cursor.moveToNext());
         }
+        return list;
     }
     //Storing instance of County to database.
     public void saveCounty(County county) {
