@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -57,5 +58,19 @@ public class ChooseAreaActivity extends Activity {
         titleText = (TextView) findViewById(R.id.title_text);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
+        yoolWeatherDB = YoolWeatherDB.getInstance(this);
+        listView.setOnClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?>arg0, View view, int index, long arg3) {
+                if (currentLevel == LEVEL_PROVINCE) {
+                    selectedProvince = provinceList.get(index);
+                    queryCities();
+                } else if (currentLevel ==LEVEL_CITY) {
+                    selectedCity = cityList.get(index);
+                    queryCounties();
+                }
+            }
+        });
+        queryProvince();
     }
 }
