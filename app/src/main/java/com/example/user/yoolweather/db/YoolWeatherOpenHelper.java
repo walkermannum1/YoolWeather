@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.security.PublicKey;
 
 /**
  * Created by user on 2016/6/29.
@@ -12,7 +11,7 @@ import java.security.PublicKey;
 public class YoolWeatherOpenHelper extends SQLiteOpenHelper {
 
     //Create table Province
-    public static final String CREATE_PROVIBCE = "create table Province ("
+    public static final String CREATE_PROVINCE = "create table Province ("
             + "id integer primary key autoincrement, "
             + "province_name text, "
             + "province_code text ";
@@ -36,7 +35,7 @@ public class YoolWeatherOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_PROVIBCE);
+        db.execSQL(CREATE_PROVINCE);
         db.execSQL(CREATE_CITY);
         db.execSQL(CREATE_COUNTY);
     }

@@ -115,7 +115,7 @@ public class YoolWeatherDB {
                 County county = new County();
                 county.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
-                county.getCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
+                county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
                 county.setCityId(cityId);
                 list.add(county);
             }while (cursor.moveToNext());
