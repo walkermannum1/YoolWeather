@@ -1,6 +1,5 @@
 package com.example.user.yoolweather.util;
 
-import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.example.user.yoolweather.model.City;
