@@ -20,14 +20,14 @@ public class Province {
         return provinceName;
     }
 
-    public void setProvinceName() {
+    public void setProvinceName(String provinceName) {
         this.provinceName = provinceName;
     }
 
     public String getProvinceCode() {
         return provinceCode;
     }
-    public void setProvinceCode() {
+    public void setProvinceCode(String provinceCode) {
         this.provinceCode = provinceCode;
     }
 }
