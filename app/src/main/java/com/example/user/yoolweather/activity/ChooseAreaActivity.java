@@ -3,18 +3,23 @@ package com.example.user.yoolweather.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.yoolweather.R;
 import com.example.user.yoolweather.model.City;
 import com.example.user.yoolweather.model.County;
 import com.example.user.yoolweather.model.Province;
 import com.example.user.yoolweather.model.YoolWeatherDB;
+import com.example.user.yoolweather.util.HttpCallbackListener;
+import com.example.user.yoolweather.util.HttpUtil;
+import com.example.user.yoolweather.util.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,16 +66,132 @@ public class ChooseAreaActivity extends Activity {
         yoolWeatherDB = YoolWeatherDB.getInstance(this);
         listView.setOnClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?>arg0, View view, int index, long arg3) {
+            public void onItemClick(AdapterView<?> arg0, View view, int index, long arg3) {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(index);
                     queryCities();
-                } else if (currentLevel ==LEVEL_CITY) {
+                } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(index);
                     queryCounties();
                 }
             }
         });
-        queryProvince();
+        queryProvinces();
+    }
+
+    private void queryProvinces() {
+        provinceList = yoolWeatherDB.loadProvinces();
+        if (provinceList.size() > 0) {
+            dataList.clear();
+            for (Province province : provinceList) {
+                dataList.add(province.getProvinceName());
+            }
+            adapter.notifyDataSetChanged();
+            listView.setSelection(0);
+            titleText.setText("china");
+            currentLevel = LEVEL_PROVINCE;
+        } else {
+            queryProvinces(null, "province");
+        }
+    }
+
+    private void queryCities() {
+        cityList = yoolWeatherDB.loadCities(selectedProvince.getId());
+        if (cityList.size() > 0) {
+            dataList.clear();
+            for (City city : cityList) {
+                dataList.add(city.getCityName());
+            }
+            adapter.notifyDataSetChanged();
+            listView.setSelection(0);
+            titleText.setText(selectedProvince.getProvinceName());
+            currentLevel = LEVEL_CITY;
+        } else {
+            queryFromServer(selectedProvince.getProvinceCode(), "city");
+        }
+    }
+
+    private void queryCounties() {
+        countyList = yoolWeatherDB.loadCounties(selectedCity.getId());
+        if (countyList.size() > 0) {
+            dataList.clear();
+            for (County county : countyList) {
+                dataList.add(county.getCountyName());
+            }
+            adapter.notifyDataSetChanged();
+            listView.setSelection(0);
+            titleText.setText(selectedCity.getCityName());
+            currentLevel = LEVEL_COUNTY;
+        } else {
+            queryFromServer(selectedCity.getCityCode(), "county");
+        }
+    }
+
+    private void queryFromServer(final String code, final String type) {
+        String address;
+        if (!TextUtils.isEmpty(code)) {
+            address = "http://www.weather.com.cn/data/list3/city" + code + ".xml";
+        } else {
+            address = "http://www.weather.com.cn/data/list3/city.xml";
+        }
+        showProgressDialog();
+        HttpUtil.sendHttpRquest(address, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                boolean result = false;
+                if ("province".equals(type)) {
+                    result = Utility.handleProvinceResponse(yoolWeatherDB,response);
+                } else if ("city".equals(type)) {
+                    result = Utility.handleCitiesResponse(yoolWeatherDB,response, selectedProvince.getId());
+                } else if ("county".equals(type)) {
+                    result = Utility.handleCountiesResponse(yoolWeatherDB,response, selectedCity.getId());
+                }
+                if (result) {
+                    //
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            closeProgressDialog();
+                            if ("province".equals(type)) {
+                                queryProvinces();
+                            } else if ("city".equals(type)) {
+                                queryCities();
+                            } else if ("county".equals(type)) {
+                                queryCounties();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                //
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        Toast.makeText(ChooseAreaActivity.this, "Error on loading", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    //Show progress dialog
+    private void showProgressDialog() {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Loading...");
+            progressDialog.setCanceledOnTouchOutside(false);
+        }
+        progressDialog.show();
+    }
+
+    //Closing progress dialog
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 }
