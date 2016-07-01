@@ -53,7 +53,7 @@ public class YoolWeatherDB {
 
     //Load information of all province from database
 
-    public List<Province> loadProvince() {
+    public List<Province> loadProvinces() {
         List<Province> list = new ArrayList<Province>();
         Cursor cursor = db.query("Province", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {

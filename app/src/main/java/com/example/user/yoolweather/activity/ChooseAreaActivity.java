@@ -64,9 +64,9 @@ public class ChooseAreaActivity extends Activity {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
         yoolWeatherDB = YoolWeatherDB.getInstance(this);
-        listView.setOnClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int index, long arg3) {
+            public void onItemClick(AdapterView<?>arg0, View view, int index, long arg3) {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(index);
                     queryCities();
@@ -91,7 +91,7 @@ public class ChooseAreaActivity extends Activity {
             titleText.setText("china");
             currentLevel = LEVEL_PROVINCE;
         } else {
-            queryProvinces(null, "province");
+            queryFromServer(null, "province");
         }
     }
 
@@ -192,6 +192,18 @@ public class ChooseAreaActivity extends Activity {
     private void closeProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+    //Catching Event of pressing on back button
+    @Override
+    public void onBackPressed() {
+        if (currentLevel == LEVEL_COUNTY) {
+            queryCounties();
+        } else if (currentLevel == LEVEL_CITY) {
+            queryProvinces();
+        } else {
+            finish();
         }
     }
 }
