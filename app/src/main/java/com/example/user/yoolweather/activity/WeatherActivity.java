@@ -3,9 +3,12 @@ package com.example.user.yoolweather.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.user.yoolweather.R;
 
 /**
  * Created by user on 2016/7/4.
@@ -28,6 +31,16 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.weather_layout);
+        weatherInfoLayout = (LinearLayout) findViewById(R.id.weather_info_layout);
+        cityNameText = (TextView) findViewById(R.id.city_name);
+        publishText = (TextView) findViewById(R.id.publish_text);
+        weatherDespText = (TextView) findViewById(R.id.weather_desp);
+        temp1Text = (TextView) findViewById(R.id.temp1);
+        temp2Text = (TextView) findViewById(R.id.temp2);
+        currentDataText = (TextView) findViewById(R.id.current_data);
+        switchCity = (Button) findViewById(R.id.switch_city)
     }
 
     @Override
