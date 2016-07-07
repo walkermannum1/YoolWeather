@@ -1,7 +1,6 @@
 package com.example.user.yoolweather.activity;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
