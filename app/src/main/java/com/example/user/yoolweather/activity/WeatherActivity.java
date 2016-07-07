@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.user.yoolweather.R;
+import com.example.user.yoolweather.util.HttpCallbackListener;
+import com.example.user.yoolweather.util.HttpUtil;
 
 /**
  * Created by user on 2016/7/4.
@@ -83,6 +85,25 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     }
 
     private void queryWeatherCode(String countyCode) {
+        String address = "http://www.weather.com.cn/data/list3/city" + countyCode + ".xml";
+        queryFromServer(address, "countyCode");
+    }
 
+    private void queryFromServer(final String address, final String type) {
+        HttpUtil.sendHttpRquest(address, new HttpCallbackListener() {
+            @Override
+            public void onFinish(final String response) {
+                if ("countyCode".equals(type)) {
+                    if (!TextUtils.isEmpty(response)) {
+                        String[] array = response.split("\\|");
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 }
