@@ -88,7 +88,28 @@
                 android:layout_gravity="center_vertical"
                 android:textColor="#FFF"
                 android:textSize="40sp"/>
+
+
+            <Button
+                android:id="@+id/switch_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#FFF"
+                android:textSize="18sp"
+                android:text="switch code"/>
+
+            <Button
+                android:id="@+id/refresh_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:textColor="#FFF"
+                android:textSize="40sp"
+                android:text="refresh weather"/>
         </LinearLayout>
+
     </RelativeLayout>
 
 </LinearLayout>

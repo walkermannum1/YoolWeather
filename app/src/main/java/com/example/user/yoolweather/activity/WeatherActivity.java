@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.example.user.yoolweather.R;
 import com.example.user.yoolweather.util.HttpCallbackListener;
 import com.example.user.yoolweather.util.HttpUtil;
+import com.example.user.yoolweather.util.Utility;
 
 /**
  * Created by user on 2016/7/4.
@@ -89,6 +90,11 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         queryFromServer(address, "countyCode");
     }
 
+    private void queryWeatherInfo(String weatherCode) {
+        String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
+        queryFromServer(address, "weatherCode");
+    }
+
     private void queryFromServer(final String address, final String type) {
         HttpUtil.sendHttpRquest(address, new HttpCallbackListener() {
             @Override
@@ -96,14 +102,43 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                 if ("countyCode".equals(type)) {
                     if (!TextUtils.isEmpty(response)) {
                         String[] array = response.split("\\|");
+                        if (array != null && array.length == 2) {
+                            String weatherCode = array[1];
+                            queryWeatherInfo(weatherCode);
+                        }
                     }
+                } else if ("weatherCode".equals(type)) {
+                    Utility.handleWeatherResponse(WeatherActivity.this, response);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showWeather();
+                        }
+                    });
                 }
             }
 
             @Override
             public void onError(Exception e) {
-
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        publishText.setText("synchronized failed");
+                    }
+                });
             }
         });
+    }
+
+    private void showWeather() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        cityNameText.setText(prefs.getString("city_name", ""));
+        temp1Text.setText(prefs.getString("temp1", ""));
+        temp2Text.setText(prefs.getString("temp2", ""));
+        weatherDespText.setText(prefs.getString("weather_desp", ""));
+        publishText.setText("Today"+prefs.getString("publish_time", "")+ "publish");
+        currentDataText.setText(prefs.getString("current_data", ""));
+        weatherInfoLayout.setVisibility(View.VISIBLE);
+        cityNameText.setVisibility(View.VISIBLE);
     }
 }
